@@ -24,6 +24,6 @@ build:
         name: echo
         code: |
           echo "hello world!"
-	  pwd
-	  ls -l
+          pwd
+          ls -l
 	  

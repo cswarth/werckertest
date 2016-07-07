@@ -27,3 +27,11 @@ build:
           pwd
           ls -l
 	  
+dev:
+  steps:
+    - script:
+      name: inside dev
+      code: |
+      	    echo "inside dev pipeline"
+	    pwd
+	    ls -l

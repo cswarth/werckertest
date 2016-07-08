@@ -27,14 +27,6 @@ dev:
           ./csv2html.py sample.csv "$WERCKER_OUTPUT_DIR/output.html"
 deploy:
   steps:
-        - script:
-            name: hello deploy
-            code: |
-               echo "WERCKER_OUTPUT_DIR = $WERCKER_OUTPUT_DIR"
-               echo "WERCKER_SOURCE_DIR = $WERCKER_SOURCE_DIR"
-               echo "WERCKER_GIT_OWNER = $WERCKER_GIT_OWNER"
-               echo "WERCKER_GIT_REPOSITORY = $WERCKER_GIT_REPOSITORY"
-               echo "GITHUB_TOKEN = $GITHUB_TOKEN"
         - lukevivier/gh-pages:
             token: $GITHUB_TOKEN
             repo: "$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY"

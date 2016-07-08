@@ -2,49 +2,44 @@
 
 import sys
 import csv
-if len(sys.argv) < 3:
-    print "Usage: csvToTable.py csv_file html_file"
-    exit(1)
+import pandas as pd
+import argparse
+import jinja2
+import getpass
+from jinja2 import Environment, FileSystemLoader
+import datetime
+import os
 
- # Open the CSV file for reading
+# Capture our current directory
+THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 
-reader = csv.reader(open(sys.argv[1]))
+def render(table, fp, templatefile):
+    env = Environment(loader=FileSystemLoader(THIS_DIR),
+                          trim_blocks=True)
+    # Alias str.format to strformat in template
+    env.filters['strformat'] = str.format
+    template = env.get_template(templatefile)
+    template.stream(table=table,
+            date=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            user=getpass.getuser(),
+            command=" ".join(sys.argv),
+            workdir=os.getcwd()).dump(fp)
 
- # Create the HTML file for output
+    
+def main():
+    p = argparse.ArgumentParser()
+    p.add_argument('infile', nargs='?', type=argparse.FileType('r'), default=sys.stdin)
+    p.add_argument('outfile', nargs='?', type=argparse.FileType('w'), default=sys.stdout)
+    p.add_argument('-t', '--template', default='template.jinja',
+            help="""Jinja2 Tempate file[default: %(default)]""")
+    a = p.parse_args()
+    
+    df = pd.read_csv(a.infile)
+    tbl = df.to_html(index=False, index_names=False, classes="table table-bordered table-striped table-condensed")
 
-htmlfile = open(sys.argv[2],"w")
+    with a.outfile as fp:
+        render(tbl, fp, a.template)
 
- # initialize rownum variable
-rownum = 0
 
- # write <table> tag
-
-htmlfile.write('<table>')
-
- # generate table contents
-
-for row in reader: # Read a single row from the CSV file
-
- # write header row. assumes first row in csv contains header
-   if rownum == 0:
-      htmlfile.write('<tr>') # write <tr> tag
-      for column in row:
-          htmlfile.write('<th>' + column + '</th>')
-      htmlfile.write('</tr>')
-
-  #write all other rows 
-   else:
-      htmlfile.write('<tr>')    
-      for column in row:
-          htmlfile.write('<td>' + column + '</td>')
-      htmlfile.write('</tr>')
-
-   #increment row count 
-   rownum += 1
-
- # write </table> tag
-htmlfile.write('</table>')
-
- # print results to shell
-print "Created " + str(rownum) + " row table."
-exit(0)
+if __name__ == '__main__':
+    main()

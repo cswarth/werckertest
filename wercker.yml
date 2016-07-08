@@ -16,5 +16,5 @@ deploy:
                echo "hello from deploy"
         - lukevivier/gh-pages@0.2.1:
             token: $GITHUB_TOKEN
-            repo: cswarth/werkertest
+            repo: "$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY"
             path: $WERCKER_SOURCE_DIR

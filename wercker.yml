@@ -5,7 +5,7 @@ box: continuumio/miniconda
 build:
   steps:
     - script:
-        name: Install dependencies 
+        name: Install dependencies
         code: |-
                 conda install -y pandas jinja2
 
@@ -14,13 +14,28 @@ build:
         code: |
           ./csv2html.py sample.csv "$WERCKER_OUTPUT_DIR/output.html"
 
+dev:
+  steps:
+    - script:
+        name: Install dependencies
+        code: |-
+                conda install -y pandas jinja2
+
+    - script:
+        name: convert to html
+        code: |
+          ./csv2html.py sample.csv "$WERCKER_OUTPUT_DIR/output.html"
 deploy:
   steps:
         - script:
             name: hello deploy
             code: |
-               echo "hello from deploy"
-        - lukevivier/gh-pages@0.2.1:
+               echo "WERCKER_OUTPUT_DIR = $WERCKER_OUTPUT_DIR"
+               echo "WERCKER_SOURCE_DIR = $WERCKER_SOURCE_DIR"
+               echo "WERCKER_GIT_OWNER = $WERCKER_GIT_OWNER"
+               echo "WERCKER_GIT_REPOSITORY = $WERCKER_GIT_REPOSITORY"
+               echo "GITHUB_TOKEN = $GITHUB_TOKEN"
+        - lukevivier/gh-pages:
             token: $GITHUB_TOKEN
             repo: "$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY"
-            path: output
+            path: "$WERCKER_SOURCE_DIR"

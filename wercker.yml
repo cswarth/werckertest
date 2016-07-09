@@ -27,7 +27,7 @@ dev:
           ./csv2html.py sample.csv "$WERCKER_OUTPUT_DIR/output.html"
 deploy:
   steps:
-        - lukevivier/gh-pages:
+        - ematsen/gh-pages:
             token: $GITHUB_TOKEN
             repo: "$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY"
             path: "$WERCKER_SOURCE_DIR"

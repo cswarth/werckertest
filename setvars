@@ -1,3 +1,0 @@
-X_WERCKER_GIT_REPOSITORY=$(git remote show -n origin | sed '/Fetch/!d;s/^.*Fetch.*\/\(.*\)\.git$/\1/')
-
-X_WERCKER_GIT_OWNER=$(git remote show -n origin | sed '/Fetch/!d;s/^.*Fetch.*:\(.*\)\/.*\.git$/\1/')
